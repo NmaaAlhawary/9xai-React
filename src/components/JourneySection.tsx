@@ -1,138 +1,151 @@
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const phases = [
   {
     number: "01",
     title: "Application & Selection",
-    description: "Submit your application and go through our rigorous selection process designed to identify high-potential candidates.",
-    duration: "2 weeks",
-    icon: "📝"
+    description: "Submit your application through our multi-step process including assessments, video introduction, and technical checks.",
+    duration: "2-3 weeks",
   },
   {
     number: "02",
     title: "AI Bootcamp",
-    description: "Intensive foundational training in AI concepts, tools, and methodologies to prepare you for real-world challenges.",
-    duration: "4 weeks",
-    icon: "🚀"
+    description: "Intensive foundational training to align all fellows on core AI concepts, tools, and methodologies.",
+    duration: "4-6 weeks",
   },
   {
     number: "03",
     title: "Rotations & Embedded Work",
-    description: "Work embedded within partner institutions, rotating through different AI challenges and building practical experience.",
-    duration: "5 months",
-    icon: "💼"
+    description: "Work directly inside partner institutions on live AI challenges, rotating to gain diverse experience.",
+    duration: "4-5 months",
   },
   {
     number: "04",
     title: "Capstone Project",
-    description: "Design and deliver a significant AI project that demonstrates your capabilities and creates real impact.",
-    duration: "6 weeks",
-    icon: "🎯"
-  }
+    description: "Complete a significant AI project demonstrating your capabilities and contributing to national priorities.",
+    duration: "6-8 weeks",
+  },
 ];
 
 const JourneySection = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"]
-  });
+  const [visiblePhases, setVisiblePhases] = useState<number[]>([]);
+  const phaseRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const lineHeight = useTransform(scrollYProgress, [0, 0.8], ["0%", "100%"]);
+  useEffect(() => {
+    const observers: IntersectionObserver[] = [];
+
+    phaseRefs.current.forEach((ref, index) => {
+      if (ref) {
+        const observer = new IntersectionObserver(
+          ([entry]) => {
+            if (entry.isIntersecting) {
+              setVisiblePhases((prev) => 
+                prev.includes(index) ? prev : [...prev, index]
+              );
+            }
+          },
+          { threshold: 0.3, rootMargin: "0px 0px -100px 0px" }
+        );
+        observer.observe(ref);
+        observers.push(observer);
+      }
+    });
+
+    return () => {
+      observers.forEach((observer) => observer.disconnect());
+    };
+  }, []);
 
   return (
-    <section id="journey" className="py-24 bg-background relative overflow-hidden">
-      {/* Background elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-0 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
-      </div>
-
-      <div className="container relative z-10 px-6" ref={containerRef}>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-20"
-        >
-          <span className="inline-block text-accent font-semibold mb-4 text-sm tracking-wider uppercase">
-            The Process
+    <section className="py-24 bg-background">
+      <div className="container px-6">
+        {/* Section header */}
+        <div className="text-center mb-16">
+          <span className="inline-block mb-4 text-sm font-semibold text-accent uppercase tracking-wider">
+            Your Path
           </span>
-          <h2 className="text-3xl md:text-5xl font-black text-foreground mb-6">
-            The <span className="text-gradient">9XAI</span> Journey
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-foreground mb-6">
+            The 9XAI Journey
           </h2>
-          <p className="max-w-2xl mx-auto text-muted-foreground text-lg">
-            Your path from applicant to AI professional, designed for maximum growth and impact.
+          <p className="max-w-2xl mx-auto text-lg text-muted-foreground">
+            A structured 8-month path designed to transform talented graduates into 
+            capable AI professionals.
           </p>
-        </motion.div>
+        </div>
 
         {/* Timeline */}
-        <div className="relative max-w-4xl mx-auto">
-          {/* Animated progress line */}
-          <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-px bg-border">
-            <motion.div 
-              className="w-full bg-gradient-to-b from-accent via-accent to-accent/50"
-              style={{ height: lineHeight }}
+        <div className="max-w-4xl mx-auto">
+          <div className="relative">
+            {/* Vertical line - animated fill */}
+            <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 bg-border -translate-x-1/2" />
+            <div 
+              className="absolute left-8 md:left-1/2 top-0 w-0.5 bg-gradient-to-b from-accent to-accent/50 -translate-x-1/2 transition-all duration-1000 ease-out"
+              style={{ 
+                height: `${Math.min(100, (visiblePhases.length / phases.length) * 100)}%` 
+              }}
             />
-          </div>
 
-          {/* Timeline items */}
-          <div className="space-y-12">
+            {/* Timeline items */}
             {phases.map((phase, index) => (
-              <motion.div
+              <div 
                 key={index}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className={`relative flex items-center gap-8 ${
-                  index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
+                ref={(el) => (phaseRefs.current[index] = el)}
+                className={`relative flex items-start gap-8 mb-12 last:mb-0 ${
+                  index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
                 }`}
+                style={{
+                  opacity: visiblePhases.includes(index) ? 1 : 0,
+                  transform: visiblePhases.includes(index) ? 'translateY(0)' : 'translateY(40px)',
+                  transition: `all 0.6s ease-out ${index * 0.1}s`,
+                }}
               >
-                {/* Timeline node */}
-                <motion.div 
-                  className="absolute left-8 md:left-1/2 -translate-x-1/2 z-10"
-                  initial={{ scale: 0 }}
-                  whileInView={{ scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ type: "spring", delay: index * 0.1 + 0.2 }}
-                >
-                  <div className="w-16 h-16 rounded-2xl bg-card border-2 border-accent flex items-center justify-center text-2xl shadow-lg shadow-accent/20">
-                    {phase.icon}
+                {/* Number circle */}
+                <div className="absolute left-8 md:left-1/2 -translate-x-1/2 z-10">
+                  <div 
+                    className={`w-16 h-16 rounded-full flex items-center justify-center shadow-lg transition-all duration-500 ${
+                      visiblePhases.includes(index) 
+                        ? 'accent-gradient scale-100' 
+                        : 'bg-muted scale-75'
+                    }`}
+                  >
+                    <span className={`text-xl font-black transition-colors duration-500 ${
+                      visiblePhases.includes(index) ? 'text-accent-foreground' : 'text-muted-foreground'
+                    }`}>
+                      {phase.number}
+                    </span>
                   </div>
-                </motion.div>
+                </div>
 
-                {/* Content card */}
-                <motion.div 
-                  className={`ml-24 md:ml-0 md:w-5/12 ${
-                    index % 2 === 0 ? "md:pr-16" : "md:pl-16"
-                  }`}
-                  whileHover={{ scale: 1.02 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <div className="group p-6 rounded-2xl bg-card border border-border hover:border-accent/50 transition-all duration-300 shadow-lg hover:shadow-xl">
-                    <div className="flex items-center gap-3 mb-4">
-                      <span className="text-4xl font-black text-accent/20 group-hover:text-accent/40 transition-colors">
-                        {phase.number}
-                      </span>
-                      <div className="px-3 py-1 rounded-full bg-accent/10 text-accent text-xs font-medium">
+                {/* Content */}
+                <div className={`ml-24 md:ml-0 md:w-[calc(50%-4rem)] ${index % 2 === 0 ? 'md:pr-8 md:text-right' : 'md:pl-8'}`}>
+                  <div 
+                    className={`p-6 rounded-2xl border card-gradient card-shadow transition-all duration-500 ${
+                      visiblePhases.includes(index) 
+                        ? 'border-accent/30 card-shadow-hover' 
+                        : 'border-border'
+                    }`}
+                  >
+                    <div className={`flex items-center gap-3 mb-3 ${index % 2 === 0 ? 'md:justify-end' : ''}`}>
+                      <span className={`px-3 py-1 text-xs font-semibold rounded-full transition-colors duration-500 ${
+                        visiblePhases.includes(index)
+                          ? 'bg-accent/20 text-accent'
+                          : 'bg-muted text-muted-foreground'
+                      }`}>
                         {phase.duration}
-                      </div>
+                      </span>
                     </div>
-                    <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-accent transition-colors">
+                    <h3 className="text-xl font-bold text-foreground mb-2">
                       {phase.title}
                     </h3>
-                    <p className="text-muted-foreground leading-relaxed">
+                    <p className="text-muted-foreground">
                       {phase.description}
                     </p>
                   </div>
-                </motion.div>
+                </div>
 
-                {/* Empty space for alternating layout */}
-                <div className="hidden md:block md:w-5/12" />
-              </motion.div>
+                {/* Spacer for alternating layout */}
+                <div className="hidden md:block md:w-[calc(50%-4rem)]" />
+              </div>
             ))}
           </div>
         </div>
