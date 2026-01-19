@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from "react";
+
 const phases = [
   {
     number: "01",
@@ -26,6 +28,34 @@ const phases = [
 ];
 
 const JourneySection = () => {
+  const [visiblePhases, setVisiblePhases] = useState<number[]>([]);
+  const phaseRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    const observers: IntersectionObserver[] = [];
+
+    phaseRefs.current.forEach((ref, index) => {
+      if (ref) {
+        const observer = new IntersectionObserver(
+          ([entry]) => {
+            if (entry.isIntersecting) {
+              setVisiblePhases((prev) => 
+                prev.includes(index) ? prev : [...prev, index]
+              );
+            }
+          },
+          { threshold: 0.3, rootMargin: "0px 0px -100px 0px" }
+        );
+        observer.observe(ref);
+        observers.push(observer);
+      }
+    });
+
+    return () => {
+      observers.forEach((observer) => observer.disconnect());
+    };
+  }, []);
+
   return (
     <section className="py-24 bg-background">
       <div className="container px-6">
@@ -46,29 +76,61 @@ const JourneySection = () => {
         {/* Timeline */}
         <div className="max-w-4xl mx-auto">
           <div className="relative">
-            {/* Vertical line */}
-            <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-accent via-accent/50 to-border -translate-x-1/2" />
+            {/* Vertical line - animated fill */}
+            <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 bg-border -translate-x-1/2" />
+            <div 
+              className="absolute left-8 md:left-1/2 top-0 w-0.5 bg-gradient-to-b from-accent to-accent/50 -translate-x-1/2 transition-all duration-1000 ease-out"
+              style={{ 
+                height: `${Math.min(100, (visiblePhases.length / phases.length) * 100)}%` 
+              }}
+            />
 
             {/* Timeline items */}
             {phases.map((phase, index) => (
               <div 
                 key={index}
+                ref={(el) => (phaseRefs.current[index] = el)}
                 className={`relative flex items-start gap-8 mb-12 last:mb-0 ${
                   index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
                 }`}
+                style={{
+                  opacity: visiblePhases.includes(index) ? 1 : 0,
+                  transform: visiblePhases.includes(index) ? 'translateY(0)' : 'translateY(40px)',
+                  transition: `all 0.6s ease-out ${index * 0.1}s`,
+                }}
               >
                 {/* Number circle */}
                 <div className="absolute left-8 md:left-1/2 -translate-x-1/2 z-10">
-                  <div className="w-16 h-16 rounded-full accent-gradient flex items-center justify-center shadow-lg">
-                    <span className="text-xl font-black text-accent-foreground">{phase.number}</span>
+                  <div 
+                    className={`w-16 h-16 rounded-full flex items-center justify-center shadow-lg transition-all duration-500 ${
+                      visiblePhases.includes(index) 
+                        ? 'accent-gradient scale-100' 
+                        : 'bg-muted scale-75'
+                    }`}
+                  >
+                    <span className={`text-xl font-black transition-colors duration-500 ${
+                      visiblePhases.includes(index) ? 'text-accent-foreground' : 'text-muted-foreground'
+                    }`}>
+                      {phase.number}
+                    </span>
                   </div>
                 </div>
 
                 {/* Content */}
                 <div className={`ml-24 md:ml-0 md:w-[calc(50%-4rem)] ${index % 2 === 0 ? 'md:pr-8 md:text-right' : 'md:pl-8'}`}>
-                  <div className={`p-6 rounded-2xl border border-border card-gradient card-shadow ${index % 2 === 0 ? '' : ''}`}>
+                  <div 
+                    className={`p-6 rounded-2xl border card-gradient card-shadow transition-all duration-500 ${
+                      visiblePhases.includes(index) 
+                        ? 'border-accent/30 card-shadow-hover' 
+                        : 'border-border'
+                    }`}
+                  >
                     <div className={`flex items-center gap-3 mb-3 ${index % 2 === 0 ? 'md:justify-end' : ''}`}>
-                      <span className="px-3 py-1 text-xs font-semibold rounded-full bg-accent/10 text-accent">
+                      <span className={`px-3 py-1 text-xs font-semibold rounded-full transition-colors duration-500 ${
+                        visiblePhases.includes(index)
+                          ? 'bg-accent/20 text-accent'
+                          : 'bg-muted text-muted-foreground'
+                      }`}>
                         {phase.duration}
                       </span>
                     </div>
