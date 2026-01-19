@@ -1,87 +1,135 @@
-import { CheckCircle2 } from "lucide-react";
+import { motion } from "framer-motion";
+import { CheckCircle2, Calendar, Users, MapPin, Briefcase } from "lucide-react";
 
 const qualities = [
   "Strong AI-native reasoning and structured problem-solving ability",
   "Comfort working with ambiguity and real-world constraints",
   "High learning agility and adaptability",
   "Ownership mindset and execution discipline",
-  "Ability to collaborate across disciplines and institutions",
+  "Ability to collaborate across disciplines and institutions"
+];
+
+const fellowshipDetails = [
+  { icon: Calendar, label: "Duration", value: "8 months (full-time)" },
+  { icon: Briefcase, label: "Status", value: "Salaried professional fellowship" },
+  { icon: Users, label: "Intake", value: "20 fellows (highly selective)" },
+  { icon: MapPin, label: "Location", value: "Jordan (Embedded in partner institutions)" },
 ];
 
 const WhoSection = () => {
   return (
-    <section className="py-24 bg-secondary">
-      <div className="container px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Left content */}
-            <div>
-              <span className="inline-block mb-4 text-sm font-semibold text-accent uppercase tracking-wider">
-                Eligibility
-              </span>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-foreground mb-6">
-                Who Should Apply?
-              </h2>
-              <p className="text-lg text-muted-foreground mb-8">
-                This fellowship is designed for high-performing bachelor-level graduates who demonstrate:
-              </p>
+    <section className="py-24 bg-secondary/30 relative overflow-hidden">
+      {/* Background pattern */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)`,
+          backgroundSize: '32px 32px'
+        }} />
+      </div>
 
-              {/* Qualities list */}
-              <ul className="space-y-4">
-                {qualities.map((quality, index) => (
-                  <li key={index} className="flex items-start gap-4">
-                    <CheckCircle2 className="w-6 h-6 text-accent flex-shrink-0 mt-0.5" />
-                    <span className="text-foreground font-medium">{quality}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+      <div className="container relative z-10 px-6">
+        <div className="grid lg:grid-cols-2 gap-16 items-start">
+          {/* Left - Who should apply */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <span className="inline-block text-accent font-semibold mb-4 text-sm tracking-wider uppercase">
+              Eligibility
+            </span>
+            <h2 className="text-3xl md:text-4xl font-black text-foreground mb-6">
+              Who Should <span className="text-gradient">Apply</span>?
+            </h2>
+            <p className="text-muted-foreground text-lg mb-8">
+              This fellowship is designed for high-performing bachelor-level graduates who demonstrate:
+            </p>
 
-            {/* Right content - Call to action card */}
-            <div className="relative">
-              <div className="relative p-10 rounded-3xl hero-gradient overflow-hidden">
-                {/* Pattern */}
-                <div className="absolute top-0 right-0 w-40 h-40 border border-accent/20 rounded-full -translate-y-1/2 translate-x-1/2" />
-                <div className="absolute bottom-0 left-0 w-32 h-32 border border-accent/10 rounded-full translate-y-1/2 -translate-x-1/2" />
-                
-                <div className="relative z-10">
-                  <h3 className="text-2xl md:text-3xl font-bold text-primary-foreground mb-4">
-                    Looking for Early Responsibility?
-                  </h3>
-                  <p className="text-primary-foreground/70 mb-8 leading-relaxed">
-                    If you want real exposure, accelerated professional growth, and the 
-                    opportunity to work on challenges that matter—9XAI is designed for you.
-                  </p>
-
-                  {/* Fellowship details */}
-                  <div className="grid grid-cols-2 gap-4 mb-8">
-                    {[
-                      { label: "Duration", value: "8 Months" },
-                      { label: "Status", value: "Salaried" },
-                      { label: "Intake", value: "20 Fellows" },
-                      { label: "Location", value: "Jordan" },
-                    ].map((detail, index) => (
-                      <div key={index} className="bg-primary-foreground/10 rounded-lg p-4">
-                        <div className="text-xs text-primary-foreground/60 uppercase tracking-wider mb-1">
-                          {detail.label}
-                        </div>
-                        <div className="text-lg font-bold text-accent">
-                          {detail.value}
-                        </div>
-                      </div>
-                    ))}
+            <div className="space-y-4">
+              {qualities.map((quality, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                  whileHover={{ x: 5 }}
+                  className="flex items-start gap-4 group"
+                >
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-accent/10 flex items-center justify-center mt-0.5 group-hover:bg-accent/20 transition-colors">
+                    <CheckCircle2 className="w-4 h-4 text-accent" />
                   </div>
-
-                  <a 
-                    href="#apply" 
-                    className="inline-flex items-center gap-2 accent-gradient px-6 py-3 rounded-lg font-semibold text-accent-foreground button-shadow hover:opacity-90 transition-all duration-300"
-                  >
-                    Start Your Application
-                  </a>
-                </div>
-              </div>
+                  <span className="text-foreground/80 group-hover:text-foreground transition-colors">
+                    {quality}
+                  </span>
+                </motion.div>
+              ))}
             </div>
-          </div>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.5 }}
+              className="mt-8 p-4 rounded-xl bg-accent/5 border border-accent/20 text-muted-foreground"
+            >
+              <span className="text-accent font-semibold">Looking for:</span> Early responsibility, real exposure, and accelerated professional growth? 9XAI is designed for you.
+            </motion.p>
+          </motion.div>
+
+          {/* Right - Fellowship details */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="lg:sticky lg:top-24"
+          >
+            <div className="p-8 rounded-3xl bg-card border border-border shadow-xl">
+              <h3 className="text-2xl font-bold text-foreground mb-8">
+                Fellowship Details
+              </h3>
+              
+              <div className="space-y-6">
+                {fellowshipDetails.map((detail, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.3 + index * 0.1 }}
+                    whileHover={{ scale: 1.02 }}
+                    className="flex items-center gap-4 p-4 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors"
+                  >
+                    <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center">
+                      <detail.icon className="w-6 h-6 text-accent" />
+                    </div>
+                    <div>
+                      <div className="text-sm text-muted-foreground">{detail.label}</div>
+                      <div className="font-semibold text-foreground">{detail.value}</div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+
+              <motion.a
+                href="#apply"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.7 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="mt-8 w-full inline-flex items-center justify-center gap-2 accent-gradient px-8 py-4 rounded-xl font-semibold text-accent-foreground"
+              >
+                Start Your Application
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </motion.a>
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>
