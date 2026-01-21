@@ -1,5 +1,4 @@
 import { ArrowRight } from "lucide-react";
-import logo from "@/assets/9xai-logo.png";
 
 const ApplySection = () => {
   return (
@@ -12,14 +11,6 @@ const ApplySection = () => {
 
       <div className="container px-6 relative z-10">
         <div className="max-w-3xl mx-auto text-center">
-          {/* Logo */}
-          <div className="mb-8 flex justify-center">
-            <img 
-              src={logo} 
-              alt="9XAI Logo" 
-              className="h-16 w-auto brightness-0 invert opacity-80"
-            />
-          </div>
 
           {/* Content */}
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-primary-foreground mb-6">
