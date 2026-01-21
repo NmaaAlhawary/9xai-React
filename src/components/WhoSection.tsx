@@ -1,4 +1,5 @@
 import { CheckCircle2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 const qualities = [
   "Strong AI-native reasoning and structured problem-solving ability",
@@ -9,6 +10,36 @@ const qualities = [
 ];
 
 const WhoSection = () => {
+  const [visibleQualities, setVisibleQualities] = useState<number[]>([]);
+  const qualityRefs = useRef<(HTMLLIElement | null)[]>([]);
+
+  useEffect(() => {
+    const observers: IntersectionObserver[] = [];
+
+    qualityRefs.current.forEach((ref, index) => {
+      if (ref) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                setTimeout(() => {
+                  setVisibleQualities((prev) => 
+                    prev.includes(index) ? prev : [...prev, index]
+                  );
+                }, index * 150); // Staggered delay
+              }
+            });
+          },
+          { threshold: 0.3 }
+        );
+        observer.observe(ref);
+        observers.push(observer);
+      }
+    });
+
+    return () => observers.forEach((obs) => obs.disconnect());
+  }, []);
+
   return (
     <section className="py-24 bg-secondary">
       <div className="container px-6">
@@ -29,8 +60,18 @@ const WhoSection = () => {
               {/* Qualities list */}
               <ul className="space-y-4">
                 {qualities.map((quality, index) => (
-                  <li key={index} className="flex items-start gap-4">
-                    <CheckCircle2 className="w-6 h-6 text-accent flex-shrink-0 mt-0.5" />
+                  <li 
+                    key={index} 
+                    ref={(el) => (qualityRefs.current[index] = el)}
+                    className={`flex items-start gap-4 transition-all duration-500 ${
+                      visibleQualities.includes(index)
+                        ? "opacity-100 translate-x-0"
+                        : "opacity-0 -translate-x-8"
+                    }`}
+                  >
+                    <CheckCircle2 className={`w-6 h-6 flex-shrink-0 mt-0.5 transition-colors duration-300 ${
+                      visibleQualities.includes(index) ? "text-accent" : "text-muted"
+                    }`} />
                     <span className="text-foreground font-medium">{quality}</span>
                   </li>
                 ))}
