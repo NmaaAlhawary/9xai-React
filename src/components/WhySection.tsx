@@ -34,9 +34,6 @@ const WhySection = () => {
       <div className="container px-6">
         {/* Section header */}
         <div className="text-center mb-16">
-          <span className="inline-block mb-4 text-sm font-semibold text-accent uppercase tracking-wider">
-            The Difference
-          </span>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-foreground mb-6">
             Why <span className="text-gradient">9XAI</span>?
           </h2>
