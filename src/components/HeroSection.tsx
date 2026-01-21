@@ -1,5 +1,3 @@
-import logo from "@/assets/9xai-logo.png";
-
 const HeroSection = () => {
   return (
     <section className="relative min-h-[80vh] flex items-center justify-center hero-gradient overflow-hidden">
@@ -12,25 +10,10 @@ const HeroSection = () => {
 
       <div className="container relative z-10 px-6 py-20 text-center">
         <div className="mx-auto max-w-4xl">
-          {/* Logo */}
-          <div className="mb-8 flex justify-center">
-            <img 
-              src={logo} 
-              alt="9XAI Logo" 
-              className="h-28 md:h-36 w-auto brightness-0 invert"
-            />
-          </div>
-
-          {/* Badge */}
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-4 py-2">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-accent" />
-            <span className="text-sm font-medium text-accent">Lighthouse Cohort — Now Accepting Applications</span>
-          </div>
-
           {/* Main heading */}
           <h1 className="mb-6 text-4xl font-black text-primary-foreground md:text-5xl lg:text-6xl">
-            Jordan's National Fellowship for{" "}
-            <span className="text-gradient">Applied Artificial Intelligence</span>
+            Jordan's National Initiative for{" "}
+            <span className="text-gradient">Next-Level Expertise in Artificial Intelligence</span>
           </h1>
 
           {/* Description */}
